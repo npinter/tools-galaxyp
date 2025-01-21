@@ -1,11 +1,11 @@
 <tool id="diann" name="DIA-NN" version="@TOOL_VERSION@+galaxy@VERSION_SUFFIX@">
     <description>is a software for DIA/SWATH data processing</description>
     <macros>
-        <token name="@TOOL_VERSION@">1.8.1</token>
-        <token name="@VERSION_SUFFIX@">3</token>
+        <token name="@TOOL_VERSION@">1.9.2</token>
+        <token name="@VERSION_SUFFIX@">0</token>
     </macros>
     <requirements>
-        <container type="docker">biocontainers/diann:@TOOL_VERSION@_cv2</container>
+        <container type="docker">diann:@TOOL_VERSION@</container>
     </requirements>
     <command detect_errors="exit_code"><![CDATA[
         mkdir ./input_data &&
@@ -94,7 +94,7 @@
             $algo_options.relaxed_prot_inf
             $algo_options.prot_inf
             $algo_options.nn_classifier
-            $algo_options.quant_strategy
+            $algo_options.quant_engine
             $algo_options.cross_run_norm
             $algo_options.lib_gen_strategy
 
@@ -277,15 +277,14 @@
             </param>
             <param name="nn_classifier" type="select" label="Neural network classifier" help="Activates the neural network classifier. Default is single-pass mode. Double-pass mode is the best in most cases but is about twice slower than single-pass">
                 <option value="" selected="True">Single-pass mode</option>
+                <option value="--conservative">Conservative mode</option>
                 <option value="--double-search">Double-pass mode</option>
                 <option value="--no-nn">off</option>
             </param>
-            <param name="quant_strategy" type="select" label="Quantification strategy" help="Quantification algorithms. --no-ifs-removal/Any LC (high precision): Turns off interference subtraction from fragment ion chromatograms. --peak-center/Robust LC (high accuracy): Instructs DIA-NN to integrate chromatographic peaks only in the vicinity of the apex. Robust LC (high precision): combination of --peak-center and --no-ifs-removal. --peak-height/Peak-height Instructs DIA-NN to use the apex height of the peak for quantification - equivalent to the 'Peak height' quantification mode.">
-                <option value="">Any LC (high accuracy)</option>
-                <option value="--no-ifs-removal">Any LC (high precision)</option>
-                <option value="--peak-center">Robust LC (high accuracy)</option>
-                <option value="--peak-center --no-ifs-removal" selected="True">Robust LC (high precision)</option>
-                <option value="--peak-height">Peak-height</option>
+            <param name="quant_engine" type="select" label="Quantification engine" help="Choose among QuantUMS high precission, high accuracy, or the older direct quant method.">
+                <option value="">QuantUMS (high precission)</option>
+                <option value="--high-acc">QuantUMS (high accuracy)</option>
+                <option value="--direct-quant">Legacy direct quant</option>
             </param>
             <param name="cross_run_norm" type="select" label="Cross-run normalisation" help="Normalisation strategy. --global-norm/Global: Instructs DIA-NN to use simple global normalisation instead of RT-dependent normalisation. RT-dependent: Instructs DIA-NN to use RT-dependent normalisation. --sig-norm/RT and signal-dep. (experimental): Instructs DIA-NN to use RT and signal dependent normalisation (experimental). --no-norm/Off: disables cross-run normalisation. Normalised quantities reported along with the raw quantities. Default:  RT-dependent">
                 <option value="--global-norm">Global</option>
